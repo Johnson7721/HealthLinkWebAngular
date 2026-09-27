@@ -1,0 +1,36 @@
+<article class="doctor-card" [class.selected-doctor-card]="isSelected">
+  <div class="doctor-photo-wrap">
+    <img
+      class="doctor-photo"
+      [src]="doctor.imageUrl"
+      [alt]="doctor.name"
+      (error)="$any($event.target).style.display = 'none'"
+    />
+    <span class="doctor-photo-fallback" aria-hidden="true">{{
+      doctorInitials
+    }}</span>
+    <span class="photo-status" aria-hidden="true"></span>
+  </div>
+  <div class="doctor-details">
+    <h3>{{ doctor.name }}</h3>
+    <p class="doctor-specialty">
+      <span class="specialty-icon" aria-hidden="true">✚</span
+      >{{ doctor.specialty }}
+    </p>
+    <p class="availability">
+      <span></span>{{ doctor.availableSlots.length }} appointment times
+      available
+    </p>
+  </div>
+  <button
+    class="button button-outline doctor-book-button"
+    type="button"
+    [attr.aria-label]="'Book a consultation with ' + doctor.name"
+    (click)="bookRequested.emit(doctor)"
+  >
+    <svg viewBox="0 0 20 20" aria-hidden="true">
+      <path d="M4 5h12v11H4zM7 3v4m6-4v4M7 10h2m2 0h2m-6 3h2" />
+    </svg>
+    Book <span>Consultation</span>
+  </button>
+</article>

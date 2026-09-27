@@ -1,0 +1,70 @@
+@use "../../../../../styles/tokens" as tokens;
+@use "../../../../../styles/mixins" as mixins;
+
+:host {
+  display: block;
+}
+
+.search-filter {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(125px, 0.65fr) auto;
+  gap: 7px;
+  margin: 0 0 10px;
+  align-items: center;
+}
+
+input,
+select {
+  min-width: 0;
+  height: 34px;
+  padding: 0 9px;
+  border: 1px solid #e1e8ed;
+  border-radius: 6px;
+  color: #465b70;
+  background: tokens.$surface-color;
+  font-size: 10px;
+
+  &:focus-visible {
+    @include mixins.focus-ring;
+  }
+  &:focus {
+    outline: none;
+    border-color: #82bde0;
+    box-shadow: 0 0 0 3px #e8f5fc;
+  }
+}
+
+.clear-button {
+  height: 34px;
+  padding: 0 10px;
+  border: 1px solid tokens.$border-color;
+  border-radius: 6px;
+  background: tokens.$surface-color;
+  color: tokens.$brand-blue;
+  font-size: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+
+  &:hover {
+    background: tokens.$brand-blue-soft;
+  }
+  &:focus-visible {
+    @include mixins.focus-ring;
+  }
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+@media (max-width: 480px) {
+  .search-filter {
+    grid-template-columns: 1fr;
+  }
+}

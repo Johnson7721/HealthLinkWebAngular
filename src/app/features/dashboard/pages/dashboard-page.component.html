@@ -1,0 +1,186 @@
+@if (vm$ | async; as vm) {
+<div class="portal">
+  <header class="topbar">
+    <a class="brand" href="#top" [attr.aria-label]="messages.brand.homeAriaLabel">
+      <span class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 28 28"><path d="M14 23.5 4.7 15A6.1 6.1 0 0 1 13.3 6.4l.7.8.7-.8a6.1 6.1 0 0 1 8.6 8.6L14 23.5Z"/><path d="M8.6 13.7h3l1.5-3.2 2.2 6.2 1.6-3h2.5"/></svg>
+      </span>
+      <span>{{ messages.brand.name }}<span class="brand-accent">{{ messages.brand.accent }}</span></span>
+    </a>
+
+    <nav class="primary-nav" [attr.aria-label]="messages.brand.navAriaLabel">
+      <a class="nav-link active" href="#top"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="m3 9 7-6 7 6v7a1 1 0 0 1-1 1h-4v-5H8v5H4a1 1 0 0 1-1-1V9Z"/></svg>{{ messages.brand.navHome }}</a>
+      <a class="nav-link" href="#consultations">{{ messages.brand.navConsultations }}</a>
+    </nav>
+
+    <button class="profile-button" type="button" [attr.aria-label]="messages.brand.profileAriaLabel">
+      <span class="profile-avatar">{{ messages.brand.profileInitials }}</span>
+      <span class="profile-copy"><strong>{{ messages.brand.profileName }}</strong><small>{{ messages.brand.profileRole }}</small></span>
+      <svg class="chevron" viewBox="0 0 16 16" aria-hidden="true"><path d="m4 6 4 4 4-4"/></svg>
+    </button>
+  </header>
+
+  <main id="top" class="dashboard-grid">
+    <div class="dashboard-content">
+      <section class="welcome-banner" aria-labelledby="welcome-title">
+        <div class="welcome-icon" aria-hidden="true">
+          <svg viewBox="0 0 40 40"><path d="M13 6v7a7 7 0 0 0 14 0V6M10 6h6m8 0h6M20 20v5a8 8 0 0 0 8 8h2"/><circle cx="33" cy="33" r="3"/></svg>
+        </div>
+        <div>
+          <p class="eyebrow">{{ messages.welcome.eyebrow }}</p>
+          <h1 id="welcome-title">{{ messages.welcome.title }}</h1>
+          <p class="welcome-subtitle">{{ messages.welcome.subtitle }}</p>
+        </div>
+        <div class="welcome-decoration" aria-hidden="true"><span>+</span><span>+</span><span>·</span></div>
+      </section>
+
+      @if (vm.pageLoadError) {
+        <div class="notice error-notice" role="alert">{{ vm.pageLoadError }}</div>
+      }
+
+      <div class="content-columns">
+        <section class="surface doctors-surface" id="doctors" aria-labelledby="doctors-heading">
+          <div class="section-heading">
+            <div class="heading-icon doctor-heading-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M8 12V5a2 2 0 0 1 4 0v7m0-5h4a3 3 0 0 1 3 3v2a7 7 0 0 1-14 0v-1m3 11v-2m5 2v-2M7 20h10"/></svg>
+            </div>
+            <div><h2 id="doctors-heading">{{ messages.doctors.heading }}</h2><p>{{ messages.doctors.subheading }}</p></div>
+            <span class="live-indicator"><i></i> {{ messages.doctors.online }}</span>
+          </div>
+
+          <app-search-filter
+            [specialties]="vm.specialties"
+            [filters]="vm.filters"
+            [showClear]="vm.hasActiveFilters"
+            (filtersChange)="onFiltersChange($event)" />
+
+          @if (vm.doctorsLoading && vm.doctors.length === 0) {
+            <div class="loading-state" role="status" aria-live="polite">{{ messages.doctors.loading }}</div>
+          } @else if (vm.doctors.length === 0) {
+            <div class="empty-state">{{ vm.hasActiveFilters ? messages.doctors.noMatches : messages.doctors.empty }}</div>
+          } @else {
+            <div class="doctor-list" [class.is-refreshing]="vm.doctorsLoading" [attr.aria-busy]="vm.doctorsLoading">
+              @for (doctor of vm.doctors; track doctor.id) {
+                <app-doctor-card
+                  [doctor]="doctor"
+                  [isSelected]="vm.selectedDoctorId === doctor.id"
+                  (bookRequested)="openBookingFormForDoctor($event)" />
+              }
+            </div>
+          }
+
+          @if (vm.paging.totalCount > 0) {
+            <app-pagination
+              [paging]="vm.paging"
+              [pageSizeOptions]="pageSizeOptions"
+              [disabled]="vm.doctorsLoading"
+              (pageChange)="onPageChange($event)"
+              (pageSizeChange)="onPageSizeChange($event)" />
+          }
+          <p class="availability-note"><span class="info-icon">i</span> {{ messages.doctors.availabilityNote }}</p>
+        </section>
+
+        <section class="surface consultations-surface" id="consultations" aria-labelledby="consultations-heading">
+          <div class="section-heading">
+            <div class="heading-icon calendar-heading-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M5 5h14v15H5zM8 3v4m8-4v4M5 9h14M8 12h2m4 0h2m-8 3h2m4 0h2"/></svg>
+            </div>
+            <div><h2 id="consultations-heading">{{ messages.consultations.heading }}</h2><p>{{ messages.consultations.subheading }}</p></div>
+          </div>
+
+          @if (vm.consultationsLoading) {
+            <div class="loading-state" role="status" aria-live="polite">{{ messages.consultations.loading }}</div>
+          } @else if (!vm.hasConsultations) {
+            <div class="empty-state consultation-empty">{{ messages.consultations.empty }}</div>
+          } @else {
+            <h3 class="consultation-group-heading">{{ messages.consultations.upcomingHeading }} <span>{{ vm.scheduled.length }}</span></h3>
+            @if (vm.scheduled.length) {
+              <div class="consultation-list">
+                @for (consultation of vm.scheduled; track consultation.id; let last = $last) {
+                  <app-consultation-card [consultation]="consultation" [isLast]="last" />
+                }
+              </div>
+            } @else { <p class="consultation-group-empty">{{ messages.consultations.upcomingEmpty }}</p> }
+            <h3 class="consultation-group-heading past-heading">{{ messages.consultations.pastHeading }} <span>{{ vm.past.length }}</span></h3>
+            @if (vm.past.length) {
+              <div class="consultation-list">
+                @for (consultation of vm.past; track consultation.id; let last = $last) {
+                  <app-consultation-card [consultation]="consultation" [isLast]="last" />
+                }
+              </div>
+            } @else { <p class="consultation-group-empty">{{ messages.consultations.pastEmpty }}</p> }
+          }
+          @if (!vm.consultationsLoading) {
+            <div class="consultation-footer"><span><b>{{ vm.scheduled.length }}</b> {{ messages.consultations.upcomingCount(vm.scheduled.length) }}</span><span>{{ messages.consultations.timezoneNote }}</span></div>
+          }
+        </section>
+      </div>
+
+      <footer class="page-footer"><span>{{ messages.footer.copyright }}</span><span>{{ messages.footer.demoData }}</span></footer>
+    </div>
+
+    <aside class="booking-panel" id="booking" aria-labelledby="booking-heading">
+      <div class="booking-panel-header">
+        <div><p class="eyebrow">{{ messages.booking.eyebrow }}</p><h2 id="booking-heading">{{ messages.booking.heading }}</h2><p>{{ messages.booking.scheduleWith(vm.selectedDoctor?.name) }}</p></div>
+        <button class="icon-button" type="button" [attr.aria-label]="messages.booking.closeAriaLabel" (click)="bookingOpen = false">×</button>
+      </div>
+
+      @if (bookingOpen) {
+        <form class="booking-form" (ngSubmit)="submitBooking(vm.selectedDoctor)" aria-describedby="demo-data-notice">
+          <div class="selected-doctor-summary">
+            @if (vm.selectedDoctor; as selectedDoctor) {
+              <img [src]="selectedDoctor.imageUrl" [alt]="selectedDoctor.name" (error)="$any($event.target).style.display='none'">
+              <div><strong>{{ selectedDoctor.name }}</strong><span>{{ selectedDoctor.specialty }}</span><small>{{ messages.booking.slotsAvailable(selectedDoctor.availableSlots.length) }}</small></div>
+            } @else {
+              <div class="summary-placeholder">{{ messages.booking.selectPlaceholder }}</div>
+            }
+          </div>
+
+          <section class="form-section">
+            <h3><span class="step-number">1</span> {{ messages.booking.stepType }}</h3>
+            <div class="type-options">
+              <label class="type-option" [class.type-selected]="consultationType === 'Chat'">
+                <input type="radio" name="consultationType" value="Chat" [(ngModel)]="consultationType">
+                <span class="option-icon chat-option-icon"><svg viewBox="0 0 24 24"><path d="M4 5h16v12H9l-5 3V5Z"/><path d="M8 10h8m-8 3h5"/></svg></span>
+                <span class="option-copy"><strong>{{ messages.booking.chat }}</strong><small>{{ messages.booking.chatDescription }}</small></span>
+                <span class="radio-indicator"></span>
+              </label>
+              <label class="type-option" [class.type-selected]="consultationType === 'Video'">
+                <input type="radio" name="consultationType" value="Video" [(ngModel)]="consultationType">
+                <span class="option-icon video-option-icon"><svg viewBox="0 0 24 24"><rect x="3" y="6" width="13" height="12" rx="2"/><path d="m16 10 5-3v10l-5-3"/></svg></span>
+                <span class="option-copy"><strong>{{ messages.booking.video }}</strong><small>{{ messages.booking.videoDescription }}</small></span>
+                <span class="radio-indicator"></span>
+              </label>
+            </div>
+          </section>
+
+          <section class="form-section time-section">
+            <h3><span class="step-number">2</span> {{ messages.booking.stepTime }}</h3>
+            <label class="field-label" for="preferred-date-time">{{ messages.booking.timeLabel }}</label>
+            <div class="input-with-icon"><svg viewBox="0 0 20 20" aria-hidden="true"><rect x="3" y="5" width="14" height="12" rx="2"/><path d="M6 3v4m8-4v4M3 9h14"/></svg><select id="preferred-date-time" name="preferredDateTime" [(ngModel)]="preferredDateTime" required [disabled]="!vm.selectedDoctor?.availableSlots?.length" aria-describedby="slot-hint"><option value="" disabled>{{ messages.booking.timePlaceholder }}</option>@for (slot of vm.selectedDoctor?.availableSlots ?? []; track slot) { <option [value]="slot">{{ slot | date:'EEE, d MMM yyyy, h:mm a' }}</option> }</select></div>
+            <p class="field-hint" id="slot-hint"><span>i</span> {{ vm.selectedDoctor?.availableSlots?.length ? messages.booking.slotHint : messages.booking.noSlots }}</p>
+          </section>
+
+          <section class="form-section reason-section">
+            <div class="reason-heading"><h3><span class="step-number">3</span> {{ messages.booking.stepReason }}</h3><span class="required-label">{{ messages.booking.required }}</span></div>
+            <label class="field-label" for="reason-for-visit">{{ messages.booking.reasonLabel }}</label>
+            <textarea id="reason-for-visit" name="reasonForVisit" rows="4" [minlength]="reasonMinLength" [maxlength]="reasonMaxLength" [placeholder]="messages.booking.reasonPlaceholder" [(ngModel)]="reasonForVisit" required></textarea>
+            <div class="character-count">{{ reasonForVisit.length }}/{{ reasonMaxLength }}</div>
+          </section>
+
+          @if (bookingFormError) { <p class="form-message form-error" role="alert" aria-live="assertive">{{ bookingFormError }}</p> }
+          @if (vm.bookingStatus === 'error') { <p class="form-message form-error" role="alert" aria-live="assertive">{{ vm.bookingMessage }}</p> }
+          @if (vm.bookingStatus === 'success') { <p class="form-message form-success" role="status" aria-live="polite">{{ vm.bookingMessage }}</p> }
+
+          <button class="button button-primary confirm-button" type="submit" [disabled]="vm.bookingStatus === 'submitting' || !vm.selectedDoctor || !vm.selectedDoctor.availableSlots.length || !preferredDateTime">
+            @if (vm.bookingStatus === 'submitting') { <span class="spinner" aria-hidden="true"></span> {{ messages.booking.submitting }} } @else { <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 5h12v11H4zM7 3v4m6-4v4M4 9h12"/></svg> {{ messages.booking.submit }} }
+          </button>
+          <p class="privacy-note" id="demo-data-notice">{{ messages.booking.demoNotice }}</p>
+        </form>
+      } @else {
+        <div class="booking-closed"><span class="reopen-icon">＋</span><h3>{{ messages.booking.closedHeading }}</h3><p>{{ messages.booking.closedBody }}</p><button type="button" class="button button-outline" (click)="bookingOpen = true">{{ messages.booking.reopen }}</button></div>
+      }
+    </aside>
+  </main>
+</div>
+}

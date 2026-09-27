@@ -1,0 +1,2 @@
+export const BOOKING_REASON_MIN_LENGTH = 3;
+export const BOOKING_REASON_MAX_LENGTH = 500;

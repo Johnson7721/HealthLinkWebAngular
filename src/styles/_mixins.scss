@@ -1,0 +1,12 @@
+@use './tokens' as tokens;
+
+@mixin focus-ring {
+  outline: 2px solid tokens.$focus-color;
+  outline-offset: 2px;
+}
+
+@mixin surface($radius: 10px) {
+  border: 1px solid tokens.$border-color;
+  border-radius: $radius;
+  background: tokens.$surface-color;
+}

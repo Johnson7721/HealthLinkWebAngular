@@ -1,0 +1,16 @@
+<div class="search-filter">
+  <label class="visually-hidden" for="doctor-search">{{ messages.label }}</label>
+  <input id="doctor-search" type="search" [placeholder]="messages.placeholder" [formControl]="searchControl" autocomplete="off">
+
+  <label class="visually-hidden" for="specialty-filter">{{ messages.specialtyLabel }}</label>
+  <select id="specialty-filter" [formControl]="specialtyControl">
+    <option [value]="allSpecialties">{{ messages.allSpecialties }}</option>
+    @for (specialty of specialties; track specialty) {
+      <option [value]="specialty">{{ specialty }}</option>
+    }
+  </select>
+
+  @if (showClear) {
+    <button type="button" class="clear-button" (click)="clear()">{{ messages.clear }}</button>
+  }
+</div>

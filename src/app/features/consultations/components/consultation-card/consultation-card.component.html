@@ -1,0 +1,21 @@
+<article class="consultation-card" [class.last-consultation-card]="isLast">
+  <div class="consultation-type-icon" [class.video-type]="consultation.consultationType === 'Video'" aria-hidden="true">
+    @if (consultation.consultationType === 'Video') {
+      <svg viewBox="0 0 24 24"><rect x="4" y="7" width="11" height="10" rx="2"/><path d="m15 10 5-3v10l-5-3"/></svg>
+    } @else {
+      <svg viewBox="0 0 24 24"><path d="M5 6h14v10H9l-4 3V6Z"/><path d="M8 10h8m-8 3h5"/></svg>
+    }
+  </div>
+  <div class="consultation-info">
+    <div class="consultation-name-row">
+      <h3>{{ consultation.doctorName }}</h3>
+      <span class="status-pill" [class.completed-status]="consultation.status === 'Completed'">{{ consultation.status }}</span>
+    </div>
+    <p>{{ consultation.specialty }} · {{ consultation.consultationType }}</p>
+    <time [attr.datetime]="consultation.preferredDateTime">
+      <svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="5.5"/><path d="M8 5v3l2 1"/></svg>
+      {{ consultation.preferredDateTime | date:'d MMM yyyy, h:mm a' }}
+    </time>
+  </div>
+  <span class="consultation-chevron" aria-hidden="true">›</span>
+</article>

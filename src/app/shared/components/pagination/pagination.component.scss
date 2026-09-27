@@ -1,0 +1,92 @@
+@use "../../../../styles/tokens" as tokens;
+@use "../../../../styles/mixins" as mixins;
+
+:host {
+  display: block;
+}
+
+.pagination {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid tokens.$border-color;
+  font-size: 10px;
+  color: tokens.$text-muted;
+}
+
+.pagination-pages {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.page-button {
+  min-width: 26px;
+  height: 26px;
+  padding: 0 6px;
+  border: 1px solid tokens.$border-color;
+  border-radius: 6px;
+  background: tokens.$surface-color;
+  color: tokens.$text-primary;
+  font-size: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background 0.15s,
+    border-color 0.15s;
+
+  &:hover:not(:disabled):not(.active) {
+    border-color: tokens.$selection-border;
+    background: tokens.$brand-blue-soft;
+  }
+  &.active {
+    background: tokens.$brand-blue;
+    border-color: tokens.$brand-blue;
+    color: #fff;
+  }
+  &:disabled {
+    opacity: 0.45;
+    cursor: default;
+  }
+  &:focus-visible {
+    @include mixins.focus-ring;
+  }
+}
+
+.nav-button {
+  font-size: 14px;
+  line-height: 1;
+}
+
+.page-size {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+
+  select {
+    height: 26px;
+    padding: 0 6px;
+    border: 1px solid tokens.$border-color;
+    border-radius: 6px;
+    background: tokens.$surface-color;
+    color: tokens.$text-primary;
+    font-size: 10px;
+
+    &:focus-visible {
+      @include mixins.focus-ring;
+    }
+  }
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}

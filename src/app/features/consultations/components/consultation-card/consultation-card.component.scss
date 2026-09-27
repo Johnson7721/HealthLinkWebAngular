@@ -1,0 +1,97 @@
+@use "../../../../../styles/tokens" as tokens;
+
+:host {
+  display: block;
+}
+
+.consultation-card {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  min-height: 78px;
+  padding: 9px 2px;
+  border-bottom: 1px solid #edf0f3;
+}
+.last-consultation-card {
+  border-bottom: 0;
+}
+.consultation-type-icon {
+  flex: 0 0 30px;
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  border-radius: 9px;
+  color: tokens.$brand-blue;
+  background: tokens.$brand-blue-soft;
+}
+.consultation-type-icon.video-type {
+  color: #1aa879;
+  background: #eaf8f1;
+}
+.consultation-type-icon svg {
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.55;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.consultation-info {
+  min-width: 0;
+  flex: 1;
+}
+.consultation-name-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px;
+}
+.consultation-info h3 {
+  margin: 0;
+  color: #2b4058;
+  font-size: 10px;
+  font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.consultation-info > p {
+  margin: 3px 0 5px;
+  color: #8c9aa8;
+  font-size: 9px;
+}
+.consultation-info time {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: #8191a0;
+  font-size: 9px;
+}
+.consultation-info time svg {
+  width: 12px;
+  height: 12px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.3;
+  stroke-linecap: round;
+}
+.status-pill {
+  flex: 0 0 auto;
+  padding: 3px 6px;
+  border-radius: 10px;
+  color: #895fba;
+  background: #f2eafb;
+  font-size: 8px;
+  font-weight: 700;
+}
+.status-pill.completed-status {
+  color: #18875b;
+  background: #e7f7ef;
+}
+.consultation-chevron {
+  color: #97a6b4;
+  font-size: 20px;
+  line-height: 1;
+}

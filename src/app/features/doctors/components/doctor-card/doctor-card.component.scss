@@ -1,0 +1,120 @@
+@use "../../../../../styles/tokens" as tokens;
+
+:host {
+  display: block;
+}
+
+.doctor-card {
+  min-height: 91px;
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 9px;
+  border: 1px solid tokens.$card-border;
+  border-radius: 9px;
+  transition:
+    border-color 0.18s,
+    box-shadow 0.18s;
+}
+.doctor-card:hover,
+.doctor-card.selected-doctor-card {
+  border-color: tokens.$selection-border;
+  box-shadow: 0 0 0 2px tokens.$selection-shadow;
+}
+.doctor-photo-wrap {
+  position: relative;
+  flex: 0 0 54px;
+  width: 54px;
+  height: 58px;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  border-radius: 8px;
+  background: linear-gradient(150deg, #d7eaf0, #e6eff1);
+}
+.doctor-photo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 30%;
+}
+.doctor-photo-fallback {
+  color: #55869a;
+  font:
+    700 13px "Manrope",
+    sans-serif;
+}
+.photo-status {
+  position: absolute;
+  right: 3px;
+  bottom: 4px;
+  width: 10px;
+  height: 10px;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  background: #1cbd79;
+}
+.doctor-details {
+  min-width: 0;
+  flex: 1;
+}
+.doctor-details h3 {
+  margin: 0;
+  color: #2b4058;
+  font-size: 12px;
+  font-weight: 700;
+}
+.doctor-specialty {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin: 4px 0;
+  color: tokens.$text-secondary;
+  font-size: 10px;
+}
+.specialty-icon {
+  color: #12a4bf;
+  font-size: 11px;
+}
+.availability {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin: 0;
+  color: tokens.$success-text;
+  font-size: 9px;
+}
+.availability span {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: tokens.$success-color;
+}
+.doctor-book-button {
+  flex: 0 0 auto;
+  min-height: 31px;
+  gap: 5px;
+  padding: 0 8px;
+  font-size: 9px;
+}
+.doctor-book-button svg {
+  width: 12px;
+  height: 12px;
+}
+
+@media (max-width: 620px) {
+  .doctor-card {
+    gap: 9px;
+    padding: 8px;
+  }
+  .doctor-photo-wrap {
+    flex-basis: 49px;
+    width: 49px;
+    height: 54px;
+  }
+  .doctor-book-button span {
+    display: none;
+  }
+}

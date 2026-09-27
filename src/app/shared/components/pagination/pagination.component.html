@@ -1,0 +1,31 @@
+<nav class="pagination" [attr.aria-label]="messages.navAriaLabel">
+  <span class="pagination-summary" aria-live="polite">{{ summary }}</span>
+
+  <div class="pagination-pages">
+    <button type="button" class="page-button nav-button" [disabled]="disabled || paging.page <= 1" (click)="goToPage(paging.page - 1)">
+      <span aria-hidden="true">‹</span><span class="visually-hidden">{{ messages.previous }}</span>
+    </button>
+    @for (page of pages; track page) {
+      <button
+        type="button"
+        class="page-button"
+        [class.active]="page === paging.page"
+        [attr.aria-current]="page === paging.page ? 'page' : null"
+        [attr.aria-label]="messages.pageAriaLabel(page)"
+        [disabled]="disabled"
+        (click)="goToPage(page)">{{ page }}</button>
+    }
+    <button type="button" class="page-button nav-button" [disabled]="disabled || paging.page >= paging.totalPages" (click)="goToPage(paging.page + 1)">
+      <span aria-hidden="true">›</span><span class="visually-hidden">{{ messages.next }}</span>
+    </button>
+  </div>
+
+  <label class="page-size">
+    <span>{{ messages.perPageLabel }}</span>
+    <select [value]="paging.pageSize" [disabled]="disabled" (change)="onPageSizeChange($event)">
+      @for (size of pageSizeOptions; track size) {
+        <option [value]="size" [selected]="size === paging.pageSize">{{ size }}</option>
+      }
+    </select>
+  </label>
+</nav>
